@@ -69,10 +69,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	token := utils.JwtGeneration(username)
 	c.JSON(http.StatusOK, UserLoginResponse{
 		Response: models.Response{StatusCode: 0},
 		UserId:   int64(id),
-		Token:    username + password,
+		Token:    token,
 	})
 
 }
