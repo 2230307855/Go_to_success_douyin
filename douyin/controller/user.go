@@ -4,6 +4,7 @@ import (
 	"douyin/dao"
 	"douyin/models"
 	"douyin/utils"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -37,9 +38,9 @@ func Register(c *gin.Context) {
 			UserName: username,
 			Password: password,
 		}
-		token := utils.JwtGeneration(username)
 		dao.CreateUser(&newUser)
-		authToken := utils.JwtGeneration(username)
+		id, _ := dao.CheckPassword(username, password)
+		authToken := utils.JwtGeneration(username, int(id))
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: models.Response{StatusCode: 0},
 			UserId:   int64(newUser.ID),
@@ -70,7 +71,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token := utils.JwtGeneration(username)
+	token := utils.JwtGeneration(username, int(id))
 	c.JSON(http.StatusOK, UserLoginResponse{
 		Response: models.Response{StatusCode: 0},
 		UserId:   int64(id),
@@ -82,19 +83,26 @@ func Login(c *gin.Context) {
 // 用户信息
 func UserInfo(c *gin.Context) {
 	user_id := c.Query("user_id")
-
+	token := c.Query("token")
 	u, err := strconv.ParseUint(user_id, 10, 64)
+	//不合法的用户id
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user_id"})
 		return
 	}
-
+	//用户不存在
 	user, err := dao.CheckId(uint(u))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
-
+	//用户token过期
+	if err := utils.TokenVerify(token, int(u)); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user login expired or illegal status"})
+		return
+	}
+	//正确的用户信息
 	c.JSON(http.StatusOK, UserResponse{
 		Response: models.Response{StatusCode: 0},
 		User:     *user,

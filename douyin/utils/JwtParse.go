@@ -2,8 +2,8 @@ package utils
 
 import "github.com/dgrijalva/jwt-go"
 
-func ParseToken(authtoken string) (*jwt.Token, error) {
-	token, err := jwt.Parse(authtoken, func(token *jwt.Token) (interface{}, error) {
+func ParseToken(authToken string) (*jwt.Token, error) {
+	token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SingingKey), nil
 	})
 	if err != nil {
