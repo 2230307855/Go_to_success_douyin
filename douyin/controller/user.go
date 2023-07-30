@@ -26,7 +26,6 @@ func Register(c *gin.Context) {
 
 	username := c.Query("username")
 	password := c.Query("password")
-
 	if check := dao.Checkname(username); check {
 		c.JSON(http.StatusOK, models.Response{
 			StatusCode: 1,
@@ -40,10 +39,11 @@ func Register(c *gin.Context) {
 		}
 		token := utils.JwtGeneration(username)
 		dao.CreateUser(&newUser)
+		authToken := utils.JwtGeneration(username)
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: models.Response{StatusCode: 0},
 			UserId:   int64(newUser.ID),
-			Token:    token,
+			Token:    authToken,
 		})
 	}
 
@@ -70,10 +70,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	token := utils.JwtGeneration(username)
 	c.JSON(http.StatusOK, UserLoginResponse{
 		Response: models.Response{StatusCode: 0},
 		UserId:   int64(id),
-		Token:    username + password,
+		Token:    token,
 	})
 
 }
