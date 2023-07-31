@@ -11,3 +11,12 @@ func GetAllVideos() ([]models.Video, error) {
 
 	return videos, result.Error
 }
+
+// 发步视频-ChenglongShi
+func PublishVideo(newVideo models.Video) error {
+	result := db.Create(&newVideo)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

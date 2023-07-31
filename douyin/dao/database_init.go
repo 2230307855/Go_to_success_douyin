@@ -1,10 +1,8 @@
 package dao
 
 import (
-	"fmt"
-
 	"douyin/models"
-
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -29,12 +27,12 @@ func SetupDB() {
 	port := 3306
 	dbname := "datatest"
 	//登录配置-ChenglongShi---------------------------------
-	// username := "root"
-	// password := "123456"
-	// host := "127.0.0.1"
-	// port := 3306
-	// dbname := "gorm_test"
-	// dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, dbname)
+	//username := "root"
+	//password := "123456"
+	//host := "127.0.0.1"
+	//port := 3306
+	//dbname := "gorm_test"
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, dbname)
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})

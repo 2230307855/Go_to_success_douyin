@@ -5,6 +5,20 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+func GetIdFromToken(authToken string) (id int, err error) {
+	token, err := ParseToken(authToken)
+	if err != nil {
+		return -1, err
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
+	tokenId := claims["id"]
+	if i, ok := tokenId.(float64); ok {
+		return int(i), nil
+	} else {
+		return -1, err
+	}
+}
+
 // 校验token的方法，校验成功返回nil，失败返回err
 // 根据用户的id进行校验，失败返回err
 func TokenVerify(authToken string, id int) error {
