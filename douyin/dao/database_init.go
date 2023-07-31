@@ -21,17 +21,17 @@ func SetupDB() {
 	// 	viper.GetString("database.charset"),
 	// )
 	//发布配置---------------------------------------------
-	username := "datatest"
-	password := "EYxwxRsNfYTn7SN7"
+	//username := "datatest"
+	//password := "EYxwxRsNfYTn7SN7"
+	//host := "111.92.243.152"
+	//port := 3306
+	//dbname := "datatest"
+	//登录配置-ChenglongShi---------------------------------
+	username := "gorm_test"
+	password := "TYnkmaGnDzrXJciw"
 	host := "111.92.243.152"
 	port := 3306
-	dbname := "datatest"
-	//登录配置-ChenglongShi---------------------------------
-	//username := "root"
-	//password := "123456"
-	//host := "127.0.0.1"
-	//port := 3306
-	//dbname := "gorm_test"
+	dbname := "gorm_test"
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, dbname)
 
 	var err error

@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
+	"math"
 )
 
 func GetIdFromToken(authToken string) (id int, err error) {
@@ -30,8 +31,10 @@ func TokenVerify(authToken string, id int) error {
 	tokenId := claims["id"]
 	isEq := false
 	if i, ok := tokenId.(float64); ok {
-		if int(i) == id {
+		if int(math.Floor(i)) == id {
 			isEq = true
+		} else {
+			return errors.New("用户登陆错误")
 		}
 	}
 	if isEq {
