@@ -3,6 +3,7 @@ package dao
 import (
 	"douyin/models"
 	"fmt"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -21,17 +22,25 @@ func SetupDB() {
 	// 	viper.GetString("database.charset"),
 	// )
 	//发布配置---------------------------------------------
-	username := "datatest"
-	password := "EYxwxRsNfYTn7SN7"
-	host := "111.92.243.152"
-	port := 3306
-	dbname := "datatest"
+	// username := "datatest"
+	// password := "EYxwxRsNfYTn7SN7"
+	// host := "111.92.243.152"
+	// port := 3306
+	// dbname := "datatest"
 	//登录配置-ChenglongShi---------------------------------
 	//username := "root"
 	//password := "123456"
 	//host := "127.0.0.1"
 	//port := 3306
 	//dbname := "gorm_test"
+
+	// 数据库配置-JintongXu
+	username := "test_demo"
+	password := "Wh6c5CLLz6ed5dWn"
+	host := "111.92.243.152"
+	port := 3306
+	dbname := "test_demo"
+
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, dbname)
 
 	var err error
