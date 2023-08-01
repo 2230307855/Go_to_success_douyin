@@ -15,3 +15,11 @@ type FavoriteCommentRelation struct {
 	User      User    `gorm:"foreignkey:UserID;" json:"user,omitempty"`
 	UserID    uint    `gorm:"column:user_id;index:idx_userid;not null" json:"user_id"`
 }
+
+func (FavoriteVideoRelation) TableName() string {
+	return "user_favorite_videos"
+}
+
+func (FavoriteCommentRelation) TableName() string {
+	return "user_favorite_comments"
+}

@@ -1,8 +1,8 @@
 package utils
 
-const EndPoint = "输入您的服务节点"
-const AccessKeyId = "您的AccessKeyId"
-const AccessKeySecret = "输入您的AccessKey"
-const BurketName = "您的Burket名称"
+const EndPoint = "待输入"
+const AccessKeyId = "待输入"
+const AccessKeySecret = "待输入"
+const BurketName = "待输入"
 const OssFilePath = "douyin/videos/"
 const OssVisitPath = "https://img.ricemoon.cn/douyin/videos/"

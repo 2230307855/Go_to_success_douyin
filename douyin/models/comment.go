@@ -20,3 +20,7 @@ type Comment struct {
 	LikeCount  uint           `gorm:"column:like_count;default:0;not null" json:"like_count,omitempty"`
 	TeaseCount uint           `gorm:"column:tease_count;default:0;not null" json:"tease_count,omitempty"`
 }
+
+func (Comment) TableName() string {
+	return "comments"
+}

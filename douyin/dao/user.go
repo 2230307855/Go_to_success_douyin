@@ -46,7 +46,7 @@ func CheckPassword(username, password string) (uint, bool) {
 // 用于用户信息
 func CheckId(userid uint) (*models.User, error) {
 	var user models.User
-	result := db.First(&user, userid)
+	result := db.Preload("FavoriteVideos.Author").Preload("FavoriteVideos").First(&user, userid)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, fmt.Errorf("user not found")

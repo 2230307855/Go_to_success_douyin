@@ -21,12 +21,12 @@ func SetupDB() {
 	// 	viper.GetString("database.database"),
 	// 	viper.GetString("database.charset"),
 	// )
-	//发布配置---------------------------------------------
-	// username := "datatest"
-	// password := "EYxwxRsNfYTn7SN7"
-	// host := "111.92.243.152"
-	// port := 3306
-	// dbname := "datatest"
+	// 发布配置---------------------------------------------
+	username := "datatest"
+	password := "EYxwxRsNfYTn7SN7"
+	host := "111.92.243.152"
+	port := 3306
+	dbname := "datatest"
 	//登录配置-ChenglongShi---------------------------------
 	//username := "root"
 	//password := "123456"
@@ -35,11 +35,11 @@ func SetupDB() {
 	//dbname := "gorm_test"
 
 	// 数据库配置-JintongXu
-	username := "test_demo"
-	password := "Wh6c5CLLz6ed5dWn"
-	host := "111.92.243.152"
-	port := 3306
-	dbname := "test_demo"
+	// username := "demo"
+	// password := "n5fpLARZE46EsBPA"
+	// host := "8.130.82.173"
+	// port := 3306
+	// dbname := "demo"
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, dbname)
 
@@ -49,8 +49,6 @@ func SetupDB() {
 		panic("链接数据库失败, error=" + err.Error())
 	}
 
-	// 将 gorm 设计的表映射到Mysql数据库中
-	db.AutoMigrate(&models.User{}, &models.Video{}, &models.Comment{}, &models.FavoriteCommentRelation{}, &models.FavoriteVideoRelation{}, &models.FollowRelation{},
-		&models.Comment{})
+	db.AutoMigrate(&models.User{}, &models.Video{}, &models.Comment{}, &models.FavoriteVideoRelation{}, &models.FollowRelation{}, &models.Message{}, &models.FavoriteCommentRelation{})
 
 }

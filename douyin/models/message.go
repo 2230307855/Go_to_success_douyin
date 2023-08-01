@@ -18,3 +18,7 @@ type Message struct {
 	ToUserID   uint           `gorm:"index:idx_userid_from;index:idx_userid_to;not null" json:"to_user_id"`
 	Content    string         `gorm:"type:varchar(255);not null" json:"content"`
 }
+
+func (Message) TableName() string {
+	return "messages"
+}

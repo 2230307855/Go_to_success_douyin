@@ -10,3 +10,7 @@ type FollowRelation struct {
 	ToUser   User `gorm:"foreignkey:ToUserID;" json:"to_user,omitempty"`
 	ToUserID uint `gorm:"index:idx_userid;index:idx_userid_to;not null" json:"to_user_id"`
 }
+
+func (FollowRelation) TableName() string {
+	return "relations"
+}

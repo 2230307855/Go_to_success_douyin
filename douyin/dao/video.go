@@ -7,7 +7,7 @@ func GetAllVideos() ([]models.Video, error) {
 	var videos []models.Video
 
 	// 预加载作者信息，并查询所有视频
-	result := db.Preload("Author").Limit(30).Order("created_at desc").Find(&videos)
+	result := db.Preload("FavoritedByUsers").Preload("Author").Limit(30).Order("created_at desc").Find(&videos)
 
 	return videos, result.Error
 }
@@ -19,4 +19,17 @@ func PublishVideo(newVideo models.Video) error {
 		return result.Error
 	}
 	return nil
+}
+
+// 根据视频id，返回作者id
+func VideoAuthorId(video_id uint) (uint, error) {
+	var videos models.Video
+
+	// 预加载作者信息，并查询作者ID
+	if err := db.Preload("Author").First(&videos, video_id).Error; err != nil {
+		return 0, err
+	}
+
+	return videos.AuthorID, nil
+
 }
