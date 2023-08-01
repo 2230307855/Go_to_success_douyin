@@ -6,6 +6,7 @@ import (
 	"douyin/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -51,5 +52,36 @@ func Publish(c *gin.Context) {
 
 // 用户的视频发布列表，直接列出用户所有投稿过的视频
 func PublishList(c *gin.Context) {
+	token := c.Query("token")
+	id := c.Query("user_id")
+	myId, _ := strconv.Atoi(id)
+	//校验token是否合法
+	err := utils.TokenVerify(token, myId)
+	//登录不合法
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "login expired or illegal",
+			"video_list":  "{}",
+		})
+		return
+	}
+	//登录合法
+	var author models.AuthorOfVideo
+	dao.GetAuthorById(myId, &author)
+	//make([]models.VideoItem, 0)
+	videoList := []models.VideoItem{}
+	videoListres := make([]models.VideoItem, 0)
+	dao.GetVideoListByAuthorId(myId, &videoList)
 
+	for _, v := range videoList {
+		v.Author = author
+		videoListres = append(videoListres, v)
+	}
+	resObj := models.GetVideoListResponse{
+		StatusCode: http.StatusOK,
+		StatusMsg:  "请求成功！",
+		VideoList:  videoListres,
+	}
+	c.JSON(http.StatusOK, resObj)
 }

@@ -28,9 +28,9 @@ func SetupDB() {
 	port := 3306
 	dbname := "datatest"
 	//登录配置-ChenglongShi---------------------------------
-	//username := "root"
-	//password := "123456"
-	//host := "127.0.0.1"
+	//username := "gorm_test"
+	//password := "TYnkmaGnDzrXJciw"
+	//host := "111.92.243.152"
 	//port := 3306
 	//dbname := "gorm_test"
 
