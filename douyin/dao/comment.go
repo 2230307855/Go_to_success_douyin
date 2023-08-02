@@ -1,8 +1,10 @@
 package dao
 
-import(
+import (
 	"douyin/models"
+	"sort"
 )
+
 // author: mika
 
 //向数据库增加一条comment
@@ -21,6 +23,9 @@ func DeleteComment(comment models.Comment)error{
 //根据视频id查询发表的评论，按发布时间倒序
 func GetCommentsByVideoId(videoId int, comments *[]models.Comment)error{
 	result := db.Table("comments").Select("id,user_id,content,created_at").Where("video_id", videoId).Find(comments)
+	sort.Slice(*comments,func(i,j int) bool{
+		return (*comments)[j].CreatedAt.Before((*comments)[i].CreatedAt)
+	})
 	if result.Error != nil {
 		return result.Error
 	}
