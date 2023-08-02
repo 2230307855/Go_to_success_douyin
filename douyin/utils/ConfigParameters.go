@@ -1,8 +1,8 @@
 package utils
 
-const EndPoint = "https://oss-cn-hangzhou.aliyuncs.com"
-const AccessKeyId = "LTAI5tR56Um75Bkpu9JCoc5t"
-const AccessKeySecret = "VmBihAwB1AvXJReFAZYQz2BVsAQCcX"
-const BurketName = "web-test-store"
+const EndPoint = "您的端口"
+const AccessKeyId = "您的key"
+const AccessKeySecret = "您的scret"
+const BurketName = "您的仓库"
 const OssFilePath = "douyin/videos/"
-const OssVisitPath = "https://web-test-store.oss-cn-hangzhou.aliyuncs.com/douyin/videos/"
+const OssVisitPath = "文件路径"
