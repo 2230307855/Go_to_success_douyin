@@ -36,6 +36,13 @@ func Publish(c *gin.Context) {
 		CommentCount:  0,
 		Title:         title,
 	})
+	err2 := dao.WorkCountAdd(id)
+	if err2 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "upload failed",
+		})
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status_code": http.StatusInternalServerError,

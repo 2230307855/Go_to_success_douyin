@@ -22,11 +22,11 @@ func SetupDB() {
 	// 	viper.GetString("database.charset"),
 	// )
 	// 发布配置---------------------------------------------
-	username := "datatest"
-	password := "EYxwxRsNfYTn7SN7"
-	host := "111.92.243.152"
+	username := "gorm_test"
+	password := "NbxxFrRi8BNsctxn"
+	host := "8.130.82.173"
 	port := 3306
-	dbname := "datatest"
+	dbname := "gorm_test"
 	//登录配置-ChenglongShi---------------------------------
 	//username := "gorm_test"
 	//password := "TYnkmaGnDzrXJciw"

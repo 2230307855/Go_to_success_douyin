@@ -56,3 +56,27 @@ func GetFriendListByUserID(userID uint) ([]models.User, error) {
 	return friends, nil
 
 }
+
+// 在relation中添加或删除一条关注记录
+func AddRelation(userId int, targetUserId, opType int) error {
+	newReCord := models.FollowRelation{UserID: uint(userId), ToUserID: uint(targetUserId)}
+	if opType == 1 {
+		result := db.Create(&newReCord)
+		if result.Error != nil {
+			return result.Error
+		} else {
+			return nil
+		}
+	} else {
+		//先检索出来
+		db.First(&newReCord)
+		//再删除
+		result2 := db.Unscoped().Delete(&models.FollowRelation{}, newReCord.ID)
+		if result2.Error != nil {
+			return result2.Error
+		} else {
+			return nil
+		}
+	}
+
+}

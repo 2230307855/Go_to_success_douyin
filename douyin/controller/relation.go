@@ -22,7 +22,60 @@ type FriendListResponse struct {
 
 // 关注操作
 func RelationAction(c *gin.Context) {
-
+	token := c.Query("token")
+	targetUserId := c.Query("to_user_id")
+	action_type := c.Query("action_type")
+	optionType, _ := strconv.Atoi(action_type)
+	id, err := utils.GetIdFromToken(token)
+	//token校验失败
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "login expired or illegal token",
+		})
+		return
+	}
+	//token校验成功
+	//自己的关注总数加1
+	err1 := dao.AddAttentionUpdateIsFollow(id, optionType)
+	if err1 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "option error",
+		})
+		return
+	}
+	//被关注者的粉丝数加1
+	tarId, _ := strconv.Atoi(targetUserId)
+	err2 := dao.AddFollowerCount(tarId, optionType)
+	if err2 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "option error",
+		})
+		return
+	}
+	//在关系表中添加一条记录，内容填充的有关注着与被关注着的信息
+	err3 := dao.AddRelation(id, tarId, optionType)
+	if err3 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "option error",
+		})
+		return
+	}
+	//关注成功
+	if optionType == 1 {
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": 0,
+			"status_msg":  "关注成功",
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": 0,
+			"status_msg":  "取关成功",
+		})
+	}
 }
 
 // 关注列表

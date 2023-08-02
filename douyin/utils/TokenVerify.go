@@ -6,6 +6,7 @@ import (
 	"math"
 )
 
+// 根据token获取id，校验失败返回error，校验成功返回该登录用户的id
 func GetIdFromToken(authToken string) (id int, err error) {
 	token, err := ParseToken(authToken)
 	if err != nil {
