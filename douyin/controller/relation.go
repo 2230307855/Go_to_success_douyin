@@ -10,14 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type FansListResponse struct {
+type RelationResponse struct {
 	models.Response
-	FansList []models.User `json:"user_list"`
+	UserList []RelationWithFollow `json:"user_list"`
 }
 
-type FriendListResponse struct {
-	models.Response
-	FriendList []models.User `json:"user_list"`
+type RelationWithFollow struct {
+	models.User
+	Isfollow bool `json:"is_follow"`
 }
 
 // 关注操作
@@ -36,7 +36,7 @@ func RelationAction(c *gin.Context) {
 		return
 	}
 	//token校验成功
-	//自己的关注总数加1
+	//自己的关注总数加1或者减去1
 	err1 := dao.AddAttentionUpdateIsFollow(id, optionType)
 	if err1 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -45,7 +45,7 @@ func RelationAction(c *gin.Context) {
 		})
 		return
 	}
-	//被关注者的粉丝数加1
+	//被关注者的粉丝数加1或者减去1
 	tarId, _ := strconv.Atoi(targetUserId)
 	err2 := dao.AddFollowerCount(tarId, optionType)
 	if err2 != nil {
@@ -55,7 +55,7 @@ func RelationAction(c *gin.Context) {
 		})
 		return
 	}
-	//在关系表中添加一条记录，内容填充的有关注着与被关注着的信息
+	//在关系表中添加或删除一条记录，内容填充的有关注着与被关注着的信息
 	err3 := dao.AddRelation(id, tarId, optionType)
 	if err3 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -80,24 +80,51 @@ func RelationAction(c *gin.Context) {
 
 // 关注列表
 func FollowList(c *gin.Context) {
-
+	//获取参数
+	token := c.Query("token")
+	userId := c.Query("user_id")
+	//token校验失败
+	myId, _ := strconv.Atoi(userId)
+	err := utils.TokenVerify(token, myId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "Invalid login,please login again",
+		})
+		return
+	}
+	//获取关注列表失败
+	attentionUserList, err2 := dao.GetAttentionUserById(myId)
+	if err2 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "option error",
+		})
+		return
+	}
+	//给了用户的id，查询其关注的用户的列表成功
+	c.JSON(http.StatusOK, gin.H{
+		"status_code": 0,
+		"status_msg":  "success",
+		"user_list":   attentionUserList,
+	})
 }
 
 // 粉丝列表
 func FollowerList(c *gin.Context) {
 	user_id := c.Query("user_id")
-	// token := c.Query("token")
+	token := c.Query("token")
 
 	// 校验 Token
-	// _, err1 := utils.GetIdFromToken(token)
-	// // 在获取token中id的时候校验失败
-	// if err1 != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{
-	// 		"status_code": http.StatusInternalServerError,
-	// 		"status_msg":  "login expired or illegal token",
-	// 	})
-	// 	return
-	// }
+	_, err1 := utils.GetIdFromToken(token)
+	// 在获取token中id的时候校验失败
+	if err1 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "login expired or illegal token",
+		})
+		return
+	}
 
 	// 将字符串转换int64格式 但最后需要uint格式
 	userID, errID := strconv.ParseUint(user_id, 10, 64)
@@ -115,27 +142,36 @@ func FollowerList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, FansListResponse{
+	// 构建带有 is_follow 字段用户列表
+	var relationWithFollow []RelationWithFollow
+	for _, user := range fans {
+		relationWithFollow = append(relationWithFollow, RelationWithFollow{
+			User:     user,
+			Isfollow: true,
+		})
+	}
+
+	c.JSON(http.StatusOK, RelationResponse{
 		Response: models.Response{StatusCode: 0, StatusMsg: "Success"},
-		FansList: fans,
+		UserList: relationWithFollow,
 	})
 }
 
 // 好友列表
 func FriendList(c *gin.Context) {
 	user_id := c.Query("user_id")
-	// token := c.Query("token")
+	token := c.Query("token")
 
 	// 校验 Token
-	// _, err1 := utils.GetIdFromToken(token)
+	_, err1 := utils.GetIdFromToken(token)
 	// 在获取token中id的时候校验失败
-	// if err1 != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{
-	// 		"status_code": http.StatusInternalServerError,
-	// 		"status_msg":  "login expired or illegal token",
-	// 	})
-	// 	return
-	// }
+	if err1 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "login expired or illegal token",
+		})
+		return
+	}
 
 	// 将字符串转换int64格式 但最后需要uint格式
 	userID, errID := strconv.ParseUint(user_id, 10, 64)
@@ -153,8 +189,17 @@ func FriendList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, FriendListResponse{
-		Response:   models.Response{StatusCode: 0, StatusMsg: "Success"},
-		FriendList: friends,
+	// 构建带有 is_follow 字段用户列表
+	var relationWithFollow []RelationWithFollow
+	for _, user := range friends {
+		relationWithFollow = append(relationWithFollow, RelationWithFollow{
+			User:     user,
+			Isfollow: true,
+		})
+	}
+
+	c.JSON(http.StatusOK, RelationResponse{
+		Response: models.Response{StatusCode: 0, StatusMsg: "Success"},
+		UserList: relationWithFollow,
 	})
 }
