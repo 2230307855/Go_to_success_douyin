@@ -2,6 +2,7 @@ package dao
 
 import (
 	"douyin/models"
+	"errors"
 )
 
 // 返回粉丝列表
@@ -13,6 +14,11 @@ func GetFollowingListByUserID(userID uint) ([]models.User, error) {
 	// 查询所有粉丝的FollowRelation结构
 	if err := db.Model(&models.FollowRelation{}).Where("to_user_id = ?", userID).Find(&fansRelations).Error; err != nil {
 		return nil, err
+	}
+
+	// 如果没有粉丝
+	if len(fansRelations) == 0 {
+		return nil, errors.New("no fans found")
 	}
 
 	// 提取所有粉丝的 UserID
@@ -34,20 +40,52 @@ func GetFollowingListByUserID(userID uint) ([]models.User, error) {
 // 返回朋友列表
 func GetFriendListByUserID(userID uint) ([]models.User, error) {
 
-	var friendRelations []models.FollowRelation
+	var followings []models.FollowRelation
 
-	// 查询所有朋友的FollowRelation结构
-	if err := db.Model(&models.FollowRelation{}).Where("user_id = ?", userID).Find(&friendRelations).Error; err != nil {
+	// 1，查询用户（user_id）关注的FollowRelation结构
+	if err := db.Model(&models.FollowRelation{}).Where("user_id = ?", userID).Find(&followings).Error; err != nil {
 		return nil, err
 	}
 
-	// 提取所有朋友的的 UserID
-	var friendUserIDs []uint
-	for _, relation := range friendRelations {
-		friendUserIDs = append(friendUserIDs, relation.ToUserID)
+	// 如果没有关注的人就直接返回了
+	if len(followings) == 0 {
+		return nil, errors.New("没有关注的人")
 	}
 
-	// 查询所有朋友用户信息
+	// 提取用户关注的的 UserID
+	var followingUserIDs []uint
+	for _, following := range followings {
+		followingUserIDs = append(followingUserIDs, following.ToUserID)
+	}
+
+	// 2，查询关注用户的粉丝 (to_user_id)
+	var fansRelations []models.FollowRelation
+	if err := db.Model(&models.FollowRelation{}).Where("to_user_id = ?", userID).Find(&fansRelations).Error; err != nil {
+		return nil, err
+	}
+
+	// 如果用户一个粉丝也没有
+	if len(fansRelations) == 0 {
+		return nil, errors.New("没有粉丝")
+	}
+
+	// 提取用户粉丝的 UserID
+	var fansUserIDs []uint
+	for _, fans := range fansRelations {
+		fansUserIDs = append(fansUserIDs, fans.UserID)
+	}
+
+	// 3，找出互相关注的用户ID，才是朋友
+	var friendUserIDs []uint
+	for _, userID := range followingUserIDs {
+		for _, fansUserID := range fansUserIDs {
+			if userID == fansUserID {
+				friendUserIDs = append(friendUserIDs, userID)
+			}
+		}
+	}
+
+	// 4，更具3找出的朋友 ID 找出信息
 	var friends []models.User
 	if err := db.Model(&models.User{}).Find(&friends, friendUserIDs).Error; err != nil {
 		return nil, err

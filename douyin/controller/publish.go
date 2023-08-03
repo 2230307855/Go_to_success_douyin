@@ -4,10 +4,11 @@ import (
 	"douyin/dao"
 	"douyin/models"
 	"douyin/utils"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // 登录用户选择视频上传

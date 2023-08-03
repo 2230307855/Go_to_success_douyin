@@ -86,18 +86,18 @@ func FollowList(c *gin.Context) {
 // 粉丝列表
 func FollowerList(c *gin.Context) {
 	user_id := c.Query("user_id")
-	token := c.Query("token")
+	// token := c.Query("token")
 
 	// 校验 Token
-	_, err1 := utils.GetIdFromToken(token)
-	// 在获取token中id的时候校验失败
-	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status_code": http.StatusInternalServerError,
-			"status_msg":  "login expired or illegal token",
-		})
-		return
-	}
+	// _, err1 := utils.GetIdFromToken(token)
+	// // 在获取token中id的时候校验失败
+	// if err1 != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"status_code": http.StatusInternalServerError,
+	// 		"status_msg":  "login expired or illegal token",
+	// 	})
+	// 	return
+	// }
 
 	// 将字符串转换int64格式 但最后需要uint格式
 	userID, errID := strconv.ParseUint(user_id, 10, 64)
@@ -124,18 +124,18 @@ func FollowerList(c *gin.Context) {
 // 好友列表
 func FriendList(c *gin.Context) {
 	user_id := c.Query("user_id")
-	token := c.Query("token")
+	// token := c.Query("token")
 
 	// 校验 Token
-	_, err1 := utils.GetIdFromToken(token)
+	// _, err1 := utils.GetIdFromToken(token)
 	// 在获取token中id的时候校验失败
-	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status_code": http.StatusInternalServerError,
-			"status_msg":  "login expired or illegal token",
-		})
-		return
-	}
+	// if err1 != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"status_code": http.StatusInternalServerError,
+	// 		"status_msg":  "login expired or illegal token",
+	// 	})
+	// 	return
+	// }
 
 	// 将字符串转换int64格式 但最后需要uint格式
 	userID, errID := strconv.ParseUint(user_id, 10, 64)
