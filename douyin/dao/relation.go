@@ -80,3 +80,17 @@ func AddRelation(userId int, targetUserId, opType int) error {
 	}
 
 }
+
+// 根据用户的id查询出其关注的用户列表信息
+func GetAttentionUserById(userId int) ([]models.User, error) {
+	var relations []models.FollowRelation
+	userList := make([]models.User, 0)
+	result := db.Preload("ToUser").Find(&relations, "user_id=?", userId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	for _, relation := range relations {
+		userList = append(userList, relation.ToUser)
+	}
+	return userList, nil
+}

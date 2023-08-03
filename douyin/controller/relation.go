@@ -36,7 +36,7 @@ func RelationAction(c *gin.Context) {
 		return
 	}
 	//token校验成功
-	//自己的关注总数加1
+	//自己的关注总数加1或者减去1
 	err1 := dao.AddAttentionUpdateIsFollow(id, optionType)
 	if err1 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -45,7 +45,7 @@ func RelationAction(c *gin.Context) {
 		})
 		return
 	}
-	//被关注者的粉丝数加1
+	//被关注者的粉丝数加1或者减去1
 	tarId, _ := strconv.Atoi(targetUserId)
 	err2 := dao.AddFollowerCount(tarId, optionType)
 	if err2 != nil {
@@ -55,7 +55,7 @@ func RelationAction(c *gin.Context) {
 		})
 		return
 	}
-	//在关系表中添加一条记录，内容填充的有关注着与被关注着的信息
+	//在关系表中添加或删除一条记录，内容填充的有关注着与被关注着的信息
 	err3 := dao.AddRelation(id, tarId, optionType)
 	if err3 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -80,7 +80,34 @@ func RelationAction(c *gin.Context) {
 
 // 关注列表
 func FollowList(c *gin.Context) {
-
+	//获取参数
+	token := c.Query("token")
+	userId := c.Query("user_id")
+	//token校验失败
+	myId, _ := strconv.Atoi(userId)
+	err := utils.TokenVerify(token, myId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "Invalid login,please login again",
+		})
+		return
+	}
+	//获取关注列表失败
+	attentionUserList, err2 := dao.GetAttentionUserById(myId)
+	if err2 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "option error",
+		})
+		return
+	}
+	//给了用户的id，查询其关注的用户的列表成功
+	c.JSON(http.StatusOK, gin.H{
+		"status_code": 0,
+		"status_msg":  "success",
+		"user_list":   attentionUserList,
+	})
 }
 
 // 粉丝列表
