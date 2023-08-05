@@ -36,7 +36,7 @@ func Publish(c *gin.Context) {
 		FavoriteCount: 0,
 		CommentCount:  0,
 		Title:         title,
-		CoverUrl:      "\nhttps://web-test-store.oss-cn-hangzhou.aliyuncs.com/douyin/covers/default.png",
+		CoverUrl:      "https://web-test-store.oss-cn-hangzhou.aliyuncs.com/douyin/covers/default.png",
 	})
 	err2 := dao.WorkCountAdd(id)
 	if err2 != nil {
