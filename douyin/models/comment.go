@@ -25,7 +25,7 @@ type Comment struct {
 type GetCommentListResponse struct {
 	StatusCode int `json:"status_code"`
 	StatusMsg string `json:"status_msg"`
-	CommentList []CommentItem `json:"comment"`
+	CommentList []CommentItem `json:"comment_list"`
 }
 
 //用于响应的Comment结构，使用AuthorOfVideo作为用户模板
