@@ -147,7 +147,7 @@ func FollowerList(c *gin.Context) {
 	for _, user := range fans {
 		relationWithFollow = append(relationWithFollow, RelationWithFollow{
 			User:     user,
-			Isfollow: true,
+			Isfollow: false,
 		})
 	}
 
