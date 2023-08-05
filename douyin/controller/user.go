@@ -37,6 +37,7 @@ func Register(c *gin.Context) {
 		newUser := models.User{
 			UserName: username,
 			Password: password,
+			Avatar:   "https://web-test-store.oss-cn-hangzhou.aliyuncs.com/douyin/avatars/default.jpg",
 		}
 		dao.CreateUser(&newUser)
 		id, _ := dao.CheckPassword(username, password)
