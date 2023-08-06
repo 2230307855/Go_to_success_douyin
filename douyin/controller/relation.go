@@ -102,6 +102,14 @@ func FollowList(c *gin.Context) {
 		})
 		return
 	}
+	relationWithFollows := make([]RelationWithFollow, 0)
+	for _, val := range attentionUserList {
+		isFollow := val.FollowingCount > 0
+		relationWithFollows = append(relationWithFollows, RelationWithFollow{
+			User:     val,
+			Isfollow: isFollow,
+		})
+	}
 	//给了用户的id，查询其关注的用户的列表成功
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": 0,
