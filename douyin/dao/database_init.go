@@ -29,11 +29,11 @@ func SetupDB() {
 	// dbname := "gorm_test"
 
 	// 数据库配置-JintongXu
-	username := "demo"
-	password := "n5fpLARZE46EsBPA"
-	host := "8.130.82.173"
+	username := "goto"
+	password := "2mAhxLcXBhDtcTAt"
+	host := "154.12.23.183"
 	port := 3306
-	dbname := "demo"
+	dbname := "goto"
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, dbname)
 

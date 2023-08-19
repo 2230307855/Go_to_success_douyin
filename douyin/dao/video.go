@@ -5,11 +5,22 @@ import (
 )
 
 // 返回所有视频
-func GetAllVideos() ([]models.Video, error) {
+func GetAllVideos(userId int) ([]models.Video, error) {
 	var videos []models.Video
 
 	// 预加载作者信息，并查询所有视频
 	result := db.Preload("FavoritedByUsers").Preload("Author").Limit(30).Order("created_at desc").Find(&videos)
+	if userId > 0 {
+		// 判断每个视频是否被登录用户点赞，设置Is_favorite属性
+		for i, video := range videos {
+			for _, user := range video.FavoritedByUsers {
+				if user.ID == uint(userId) {
+					videos[i].Is_favorite = true
+					break
+				}
+			}
+		}
+	}
 
 	return videos, result.Error
 }

@@ -1,8 +1,9 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Video struct {
@@ -18,6 +19,7 @@ type Video struct {
 	FavoriteCount    uint           `gorm:"default:0;not null" json:"favorite_count,omitempty"`
 	CommentCount     uint           `gorm:"default:0;not null" json:"comment_count,omitempty"`
 	Title            string         `gorm:"type:varchar(50);not null" json:"title,omitempty"`
+	Is_favorite      bool           `gorm:"default:false" json:"is_favorite"`
 }
 
 func (Video) TableName() string {
