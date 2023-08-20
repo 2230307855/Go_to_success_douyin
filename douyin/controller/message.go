@@ -24,9 +24,6 @@ type MessageActionResponse struct{
 	MessageList []intMessage `json:"message_list"`
 }
 
-//TODO：单时间戳仅能维护单用户的聊天记录
-var lastTimestamp int64 = 0
-
 // 发送信息
 func MessageAction(c *gin.Context) {
 	//获取信息
@@ -73,8 +70,6 @@ func MessageAction(c *gin.Context) {
 			StatusCode: 0,
 			StatusMsg: "Message sent successfully",
 		})
-		//更新时间戳
-		lastTimestamp = int64(sendMess.CreatedAt.Unix())+1
 	}
 }
 
@@ -83,6 +78,28 @@ func MessageChat(c *gin.Context) {
 	//获取信息
 	toUserIDStr := c.Query("to_user_id")
 	token := c.Query("token")
+	preMsgTime , err := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status_code": http.StatusInternalServerError,
+			"status_msg":  "pre_msg_time is not number",
+		})
+		return
+	}
+	
+	// 若为非常大的time(认为是前端的bug)，则直接返回空消息
+	
+	if(preMsgTime >= 253402300799){
+		var msglist []intMessage
+		c.JSON(http.StatusOK, MessageActionResponse{
+			Response:   models.Response{
+				StatusCode: 0, 
+				StatusMsg: "Information query successfully",
+			},
+			MessageList: msglist,
+		})
+		return 
+	}
 
 	//校验token
 	fromUserID, err := utils.GetIdFromToken(token)
@@ -102,7 +119,7 @@ func MessageChat(c *gin.Context) {
 	}
 
 	//查询信息
-	messages, err := dao.GetMessageListByUserID(uint(fromUserID) , uint(toUserID), lastTimestamp)
+	messages, err := dao.GetMessageListByUserID(uint(fromUserID) , uint(toUserID), preMsgTime + 1)
 	if(err != nil){
 		c.JSON(http.StatusBadRequest, models.Response{
 			StatusCode: 1,
@@ -127,10 +144,4 @@ func MessageChat(c *gin.Context) {
 		},
 		MessageList: intMessageList,
 	})
-
-	//更新时间戳
-	if len(intMessageList) > 0{
-		msg := intMessageList[len(intMessageList)-1]
-		lastTimestamp = int64(msg.CreatedAt) + 1
-	}
 }
