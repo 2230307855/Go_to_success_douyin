@@ -4,6 +4,7 @@ import (
 	"douyin/dao"
 	"douyin/models"
 	"douyin/utils"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -104,7 +105,9 @@ func FollowList(c *gin.Context) {
 	}
 	relationWithFollows := make([]RelationWithFollow, 0)
 	for _, val := range attentionUserList {
-		isFollow := val.FollowingCount > 0
+		//从关系表中查找两用户之间是否有关注记录
+		isFollow := dao.IsHaveRelation(myId, int(val.ID))
+		fmt.Println("is_follow is:", isFollow)
 		relationWithFollows = append(relationWithFollows, RelationWithFollow{
 			User:     val,
 			Isfollow: isFollow,
@@ -114,7 +117,7 @@ func FollowList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": 0,
 		"status_msg":  "success",
-		"user_list":   attentionUserList,
+		"user_list":   relationWithFollows,
 	})
 }
 

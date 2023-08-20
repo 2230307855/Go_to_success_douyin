@@ -4,6 +4,7 @@ import (
 	"douyin/config"
 	"douyin/dao"
 	"douyin/routes"
+	"douyin/utils"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,10 @@ func main() {
 
 	// 数据库初始化
 	dao.SetupDB()
+
+	// 初始化日志
+	utils.InitLogger()
+	defer utils.SugarLogger.Sync()
 
 	// 初始化路由绑定
 	routes.SetupRoute(router)
