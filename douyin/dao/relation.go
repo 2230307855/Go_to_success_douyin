@@ -132,3 +132,16 @@ func GetAttentionUserById(userId int) ([]models.User, error) {
 	}
 	return userList, nil
 }
+
+// 用于判断两者之间是否有关注的关系
+func IsHaveRelation(user_id int, to_user_id int) bool {
+	var relationObj models.FollowRelation
+	result := db.Where("user_id = ? and to_user_id = ?", user_id, to_user_id).First(&relationObj)
+	if result.RowsAffected < 1 {
+		return false
+	}
+	if result.Error != nil {
+		return false
+	}
+	return true
+}

@@ -4,11 +4,10 @@ import (
 	"douyin/dao"
 	"douyin/models"
 	"douyin/utils"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 // 登录用户选择视频上传
@@ -42,13 +41,13 @@ func Publish(c *gin.Context) {
 	if err2 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status_code": http.StatusInternalServerError,
-			"status_msg":  "upload failed",
+			"status_msg":  "work_count add filed please check it",
 		})
 	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status_code": http.StatusInternalServerError,
-			"status_msg":  "upload failed",
+			"status_msg":  "upload success but database upload failed please check it",
 		})
 		return
 	} else {

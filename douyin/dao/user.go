@@ -62,11 +62,13 @@ func WorkCountAdd(userId int) error {
 	var user models.User
 	result1 := db.First(&user, userId)
 	if result1.Error != nil {
+		fmt.Println("can't find user")
 		return result1.Error
 	}
 	originWorkCount := user.WorkCount
-	result2 := db.Model(&user).Update("workCount", originWorkCount+1)
+	result2 := db.Model(&user).Update("work_count", originWorkCount+1)
 	if result2.Error != nil {
+		fmt.Println("can't add work count")
 		return result2.Error
 	}
 	return nil
