@@ -1,7 +1,6 @@
 package main
 
 import (
-	"douyin/config"
 	"douyin/dao"
 	"douyin/routes"
 	"douyin/utils"
@@ -23,9 +22,6 @@ func main() {
 
 	// 初始化路由绑定
 	routes.SetupRoute(router)
-
-	// 初始化配置
-	config.InitConfig()
 
 	err := router.Run(":8080")
 	if err != nil {
