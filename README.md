@@ -2,11 +2,10 @@
 
 # 一、项目介绍
 
-> **基于 “Gin HTTP框架 + Gorm数据库框架” 的第六届字节跳动青训营—抖音极简版项目**
->
-> - 1024code生成地址
-> - Github 地址：https://github.com/2230307855/Go_to_success_douyin
->
+**基于 “Gin HTTP框架 + Gorm数据库框架” 的第六届字节跳动青训营—抖音极简版项目**
+
+- 1024code生成地址
+- Github 地址：https://github.com/2230307855/Go_to_success_douyin
 
 # 二、项目实现
 
